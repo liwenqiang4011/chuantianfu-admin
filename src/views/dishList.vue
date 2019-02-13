@@ -9,15 +9,16 @@
     <el-tabs type="border-card">
         <el-tab-pane v-for="(c,i) in dishList" :key="i" :label="c.cname">
           <span slot="label">
-            <el-badge :value="c.dishList.length">{{c.cname}}</el-badge>
+            <el-badge :value="c.dishList.length" class="ctf-item">{{c.cname}}</el-badge>
           </span>
 
           <el-row>
-            <el-col v-for="(d,j) in c.dishList" :key="j" :xs="12" :md="6" :lg="4" :xl="3">
+            <el-col v-for="(d,j) in c.dishList" :key="j" :xs="12" :md="8" :lg="8" :xl="3">
               <!--<ctf-dish :data="d"></ctf-dish>-->
-              <div>
-                {{d.title}}
-                <img :src="require('../assets/img/'+d.imgUrl)" alt="" style="max-width:80%;">
+              <div style="max-width:80%;height:250px;" @mouseover="show">
+                <img :src="require('../assets/img/'+d.imgUrl)" alt="">
+                <div class="ctf-textTile">{{d.title}}</div>
+                <div class="ctf-none">{{d.detail}}</div>
               </div>
             </el-col>
           </el-row>
@@ -32,6 +33,11 @@
     data(){
       return {
         dishList:[]//[{cid:xx,cname:x,dishList:[]}]
+      }
+    },
+    methods:{
+      show(){
+        
       }
     },
     mounted() {
@@ -49,5 +55,21 @@
 <style lang="scss">
   .ctf-tab{
     padding-top:20px;
+  }
+  .ctf-item{
+    top:8px;
+  }
+  .ctf-textTile{
+    position: relative;
+    left: 0;
+    top: -160px;
+    color:#fff;
+  }
+  .ctf-none{
+    position: relative;
+    left:0;
+    top:-150px;
+    font-size:10px;
+    color:#fff;
   }
 </style>

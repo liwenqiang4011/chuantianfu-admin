@@ -3,7 +3,7 @@
         <el-card class="hover">
             <div class="ctf-table" :style="{backgroundColor:getTableColor(data.status)}">{{data.tid}}号桌：{{data.status|tableStatus}}</div>
             <el-button size="mini" type="success" plain @click="showTableDetail">详情</el-button>
-            <el-button size="mini" type="danger" plain @click="update">修改</el-button>
+            <el-button size="mini" type="danger" plain @click="updateTableDetail">修改</el-button>
         </el-card>
 
         <!--桌台详情对话框-->
@@ -11,11 +11,14 @@
         :before-close="closeDialogTableDetail">
             <!--对话框主体-->
             <el-tabs type="border-card" @tab-click="makeQRcode">
-                <el-tab-pane label="桌台状态">
-                    状态
+                <el-tab-pane label="桌台状态" class="ctf-tab-pane">
+                    <div>桌台编号：{{data.tid}}号桌</div>
+                    <div>桌台名称：{{data.tname}}</div>
+                    <div>桌台类型：{{data.type}}</div>
+                    <div>桌台状态：{{data.status|tableStatus}}</div>
                 </el-tab-pane>
                 <el-tab-pane label="桌台二维码">
-                    <div><img :src="qrcodeData"></img></div>
+                    <div><img :src="qrcodeData"></div>
                     <el-button size="mini" type="primary">下载二维码</el-button>
                     <div class="ctf-hint">提示：请将此二维码打印于对应桌台；顾客扫码即可点餐</div>
                 </el-tab-pane>
@@ -23,6 +26,28 @@
             <!--对话框尾部-->
             <div slot="footer">
                 <el-button type="primary" @click="dialogTableDetailVisible=false">确定</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog :title="`${data.tid}号桌台信息修改`" :visible="dialogVisible" :before-close="handleClose">
+                <!--<el-form-item label="桌台名称：">
+                    <el-input v-model="formData.tname"></el-input>
+                </el-form-item>
+                <el-form-item label="桌台类型：">
+                    <el-input v-model="formData.type"></el-input>
+                </el-form-item>
+                <el-form-item label="桌台状态：">
+                    <el-input v-model="formData.status"></el-input>
+                </el-form-item>-->
+                桌台状态：
+                <el-radio-group v-model="radio">
+                    <el-radio :label="1" border>空闲</el-radio>
+                    <el-radio :label="2" border>预定</el-radio>
+                    <el-radio :label="3" border>占用</el-radio>
+                    <el-radio :label="4" border>其他</el-radio>
+                </el-radio-group>
+            <div slot="footer">
+                <el-button type="primary" @click="isUpdate">确定</el-button>
+                <el-button type="primary" @click="cancellUpdate">取消</el-button>
             </div>
         </el-dialog>
     </div>
@@ -33,7 +58,14 @@ export default {
     data(){
         return {
             dialogTableDetailVisible:false,
-            qrcodeData:''
+            dialogVisible:false,
+            qrcodeData:'',
+            formData:{
+                tname:this.data.tname,
+                type:this.data.type,
+                status:this.data.status
+            },
+            radio:this.data.status
         }
     },
     methods: {
@@ -69,8 +101,19 @@ export default {
                 this.qrcodeData=url;
             })
         },
-        update(){
-            console.log("哈哈")
+        updateTableDetail(){
+            this.dialogVisible=true
+        },
+        handleClose(){
+            this.dialogVisible=false
+        },
+        isUpdate(){
+            this.$emit("parameter",this.formData,this.data.tid)//子->父传参
+            this.dialogVisible=false;
+            
+        },
+        cancellUpdate(){
+            this.dialogVisible=false
         }
     },
     
@@ -96,6 +139,14 @@ export default {
         }
         .ctf-hint{
             margin:10px 0;
+        }
+        .ctf-tab-pane{
+            text-align: left;
+            div{
+                margin: 10px 0;
+                font-size:15px;
+
+            }
         }
     }
 </style>
